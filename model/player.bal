@@ -29,8 +29,8 @@ public type ComputerPlayer object {
 
         P{{card}} new card
     }
-    public function addCard(Card c) {
-        cards[<string>counter] = c;
+    public function addCard(Card card) {
+        cards[<string>counter] = card;
         counter++;
     }
 
