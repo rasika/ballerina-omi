@@ -4,21 +4,24 @@ public type Player object {
     public string playerName;
     public map cards;
     public int counter = 0;
+    public string currentCardType;
 
     public new(playerName) {
 
     }
 
     public function addCard(Card c);
-    public function playCard() returns Card;
+    public function playCard() returns Card | ();
     public function printAllCards(boolean textOnly = false);
     public function declareTrumps() returns string;
+    public function setCurrentCardType(string? cardType);
 };
 
 public type ComputerPlayer object {
     public string playerName;
     public map cards;
     public int counter = 0;
+    public string currentCardType;
 
     public new(playerName) {
 
@@ -39,7 +42,10 @@ public type ComputerPlayer object {
 
         R{{}} Card
     }
-    public function playCard() returns Card {
+    public function playCard() returns Card | (){
+        if(lengthof cards == 0){
+            return ();
+        }
         string cardKey = cards.keys()[0];
         Card chosedCard = check <Card>cards[cardKey];
         _ = cards.remove(cardKey);
@@ -78,12 +84,17 @@ public type ComputerPlayer object {
     public function declareTrumps() returns string {
         return "Spades";
     }
+
+    public function setCurrentCardType(string? cardType){
+
+    }
 };
 
 public type TerminalPlayer object {
     public string playerName;
     public map cards;
     public int counter = 0;
+    public string currentCardType;
 
     public new(playerName) {
 
@@ -104,7 +115,10 @@ public type TerminalPlayer object {
 
         R{{}} Card
     }
-    public function playCard() returns Card {
+    public function playCard() returns Card | (){
+        if(lengthof cards == 0){
+            return ();
+        }
         printAllCards();
         // Ask for choice
         boolean chosed = false;
@@ -161,9 +175,9 @@ public type TerminalPlayer object {
     }
     public function declareTrumps() returns string {
         printAllCards();
-        string[] types = ["Hearts", "Diamonds", "Spades", "Clubs"];
+        (string, string)[] types = [("Hearts","♥"), ("Diamonds","♦"), ("Spades","♠"), ("Clubs","♣")];
         foreach i, t in types {
-            io:println((i + 1) + ". " + types[i]);
+            io:println((i + 1) + ". " + t[0] + " (" + t[1] + ")");
         }
         boolean chosed = false;
         int choice;
@@ -175,6 +189,10 @@ public type TerminalPlayer object {
                 io:println("Invalid Choice!");
             }
         }
-        return types[choice - 1];
+        return types[choice - 1][0];
+    }
+
+    public function setCurrentCardType(string? cardType){
+
     }
 };

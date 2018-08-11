@@ -4,6 +4,7 @@ public type Game object {
     string trumps;
     Player[] players = [];
     Card[] cards = [];
+    Turn gameTurn = new(4, startPosition  = 2);
 
     public new() {
         string[] types = ["Spades", "Hearts", "Clubs", "Diamonds"];
@@ -42,17 +43,10 @@ public type Game object {
     }
 
     function distributeCards(int[] randsOrder) {
-        int playerIndex = 0;
         foreach randVal in randsOrder {
             Card c = cards[randVal];
-            players[playerIndex].addCard(c);
-            if (playerIndex == 3) {
-                playerIndex = 0;
-            } else {
-                playerIndex++;
-            }
+            players[gameTurn.next()].addCard(c);
         }
-        io:println();
     }
 
     documentation {
@@ -73,14 +67,37 @@ public type Game object {
             throw err;
         }
 
+        //Distribute first half of cards
         distributeCards(createRandomNumbers(0, 16));
 
         // Player always gets chance to declare thurumpu
-        trumps = players[3].declareTrumps();
+        Player firstPlayer = players[gameTurn.next()];
+        trumps = firstPlayer.declareTrumps();
+        Card card = new("A", trumps);
+        io:println(trumps + " " + card.getCardTypeSymbol() + " are the Trumps!");
 
-        io:println("\033[H\033[2J");
+        //Distribute second half of cards
         distributeCards(createRandomNumbers(16, 32));
 
-        _ = players[3].playCard();
+        //Reset turn into current user
+        _ = gameTurn.back();
+
+        boolean stop = false;
+        string? cardType = ();
+        while (!stop) {
+            Player currentPlayer = players[gameTurn.next()];
+            currentPlayer.setCurrentCardType(cardType);
+            Card? playerCard = currentPlayer.playCard();
+            match playerCard {
+                Card c => {
+                    c.print();
+                }
+                () =>  {
+                    if(gameTurn.isFirstTurn()){
+                        stop = true;
+                    }
+                }
+            }
+        }
     }
 };
