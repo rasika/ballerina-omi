@@ -1,15 +1,15 @@
 import ballerina/io;
 import model;
 
-function main(string... args) {
+public function main(string... args) {
     io:println("-==Welcome to Omi==-");
 
     model:Game game = new();
 
-    model:Player p1 = new model:ComputerPlayer("p1");
-    model:Player p2 = new model:ComputerPlayer("p2");
-    model:Player p3 = new model:ComputerPlayer("p3");
-    model:Player p4 = new model:TerminalPlayer("p4");
+    model:Player p1 = new model:ComputerPlayer("Player1", "B");
+    model:Player p2 = new model:ComputerPlayer("Player2", "A");
+    model:Player p3 = new model:ComputerPlayer("Player3", "B");
+    model:Player p4 = new model:TerminalPlayer("Rasika ", "A");
 
     game.addPlayer(p1);
     game.addPlayer(p2);
